@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>AI Powered Interview Analyzer</h1>
+
+    <div class="upload-box">
+        <input type="file" id="video" accept="video/*">
+        <button id="analyzeBtn">Analyze Video</button>
+    </div>
+
+    <h2>Result</h2>
+    <pre id="result">Waiting for upload...</pre>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
