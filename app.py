@@ -12,12 +12,12 @@ def home():
     return render_template("index.html")
 
 @app.route("/analyze", methods=["POST"])
-def analyze():
+async def analyze():
     if "video" not in request.files:
         return jsonify({"error": "no_video_uploaded"}), 400
 
-    result = analyze_video_pipeline(request.files["video"])
+    result = await analyze_video_pipeline(request.files["video"])
     return jsonify(result), 200
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(port=5000, debug=True, threaded=False)
