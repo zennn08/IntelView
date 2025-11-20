@@ -2,11 +2,12 @@ import os
 import tempfile
 import logging
 import time
-import asyncio   # <-- penting!
+import asyncio
 
 from modules.audio.audio_utils import extract_audio
 from modules.stt.stt_utils import run_whisper
 from modules.detection.people_detector import run_people_detector
+# from modules.detection.eye_gaze_detector import run_eye_gaze_detector
 from modules.llm.llm_utils import evaluate_exam
 
 logger = logging.getLogger(__name__)
@@ -36,6 +37,7 @@ async def analyze_video_pipeline(video_file):
         # --------------------------------------
         transcript_task = asyncio.to_thread(run_whisper, audio_path)
         people_task = asyncio.to_thread(run_people_detector, temp_video_path)
+        # eye_task = asyncio.to_thread(run_eye_gaze_detector, temp_video_path)
 
         transcript, people = await asyncio.gather(
             transcript_task, people_task
