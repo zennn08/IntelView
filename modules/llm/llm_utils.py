@@ -14,15 +14,18 @@ def clean_json(text):
             text = text[4:].strip()
     return text
 
-def evaluate_exam(transcript, people_data):
+def evaluate_exam(transcript, people_data, eye_data=None):
     prompt = f"""
 You are an AI exam evaluator.
 
 Transcript:
 {transcript}
 
-Cheating Events:
+Cheating Events (People Detector):
 {json.dumps(people_data, indent=2)}
+
+Cheating Events (Eye Tracking):
+{json.dumps(eye_data or {}, indent=2)}
 
 Return JSON:
 - score
@@ -37,9 +40,11 @@ Return JSON:
         cleaned = clean_json(text)
         return json.loads(cleaned)
     except:
+        people_flag = people_data.get("cheating_detected", False) if isinstance(people_data, dict) else False
+        eye_flag = eye_data.get("cheating_detected", False) if isinstance(eye_data, dict) else False
         return {
             "score": 0,
             "reason": "LLM evaluation error",
-            "cheating_indication": people_data.get("cheating_detected", False),
+            "cheating_indication": people_flag or eye_flag,
             "feedback": "LLM failed"
         }

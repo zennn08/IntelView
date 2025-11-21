@@ -59,11 +59,16 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     const data = await response.json();
 
     document.getElementById("speechText").textContent = data.transcript;
-    document.getElementById("peopleDetect").textContent = data.people
-      .cheating_detected
+    document.getElementById("peopleDetect").textContent = data.people.cheating_detected
       ? "True"
       : "False";
     document.getElementById("event").textContent = data.people.total_events;
+
+    document.getElementById("eyeDetect").textContent = data.eye.cheating_detected
+        ? "True"
+        : "False";
+    document.getElementById("eyeEvent").textContent = data.eye.total_events;
+
     document.getElementById("score").textContent = data.evaluation.score;
     document.getElementById("reason").textContent = data.evaluation.reason;
     document.getElementById("cheatingEval").textContent =
