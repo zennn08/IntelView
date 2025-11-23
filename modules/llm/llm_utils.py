@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 import google.generativeai as genai
 
 logger = logging.getLogger(__name__)
@@ -35,9 +36,13 @@ Return JSON:
 """
 
     try:
+        time_start = time.time()
         resp = gemini.generate_content(prompt)
         text = getattr(resp, "text", resp.candidates[0].content.parts[0].text)
         cleaned = clean_json(text)
+        time_end = time.time()
+        execution_time = round(time_end - time_start, 3)
+        print("Time execution llm : " , execution_time)
         return json.loads(cleaned)
     except:
         people_flag = people_data.get("cheating_detected", False) if isinstance(people_data, dict) else False

@@ -198,6 +198,7 @@ def run_eye_tracking(video_path, min_consecutive_cheat_frames=10, left_thresh=0.
     Mengembalikan dict berisi status cheating dan daftar event (timestamp).
     left_thresh/right_thresh dipakai sebagai ambang kiri/kanan; tengah diabaikan (tidak dihitung cheating).
     """
+    time_start = time.time()
     cap = cv.VideoCapture(video_path)
     if not cap.isOpened():
         return {"error": "cannot_open_video"}
@@ -269,6 +270,10 @@ def run_eye_tracking(video_path, min_consecutive_cheat_frames=10, left_thresh=0.
                 cheating_state = False
 
     cap.release()
+
+    time_end = time.time()
+    execution_time = round(time_end - time_start, 3)
+    print("Time execution eye_tracking : " , execution_time)
 
     return {
         "cheating_detected": len(cheating_events) >= 5,

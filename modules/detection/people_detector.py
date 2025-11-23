@@ -2,7 +2,7 @@ import cv2
 from ultralytics import YOLO
 from motpy import Detection, MultiObjectTracker
 import logging
-import os
+import time
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +17,7 @@ det_model.to(device)
 # People Detector Function
 # -----------------------
 def run_people_detector(video_path):
+    time_start = time.time()
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
         return {"error": "cannot_open_video"}
@@ -24,7 +25,7 @@ def run_people_detector(video_path):
     fps = cap.get(cv2.CAP_PROP_FPS) or 25
     frame_count = 0
 
-    tracker = MultiObjectTracker(dt=1.0/fps, tracker_kwargs={"max_staleness": 10})
+    tracker = MultiObjectTracker(dt=1.0/fps, tracker_kwargs={"max_staleness": 7})
 
     # --- Track Validation (min 1 second)
     min_frames_alive = int(fps * 1)   # 1 second validation
@@ -124,6 +125,9 @@ def run_people_detector(video_path):
 
     cap.release()
 
+    time_end = time.time()
+    execution_time = round(time_end - time_start, 3)
+    print("Time execution people_detector : " , execution_time)
     return {
         "cheating_detected": len(cheating_events) > 0,
         "total_events": len(cheating_events),
