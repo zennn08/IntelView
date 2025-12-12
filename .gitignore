@@ -1,4 +1,5 @@
 capstone
 venv2
-*.pt
 **/__pycache__/*
+venv
+.env
