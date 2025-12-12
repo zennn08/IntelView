@@ -59,6 +59,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     const data = await response.json();
 
     document.getElementById("speechText").textContent = data.transcript;
+    document.getElementById("acousticConfscore").textContent = data.acoustic_confidence;
     document.getElementById("peopleDetect").textContent = data.people.cheating_detected ? "True" : "False";
     document.getElementById("event").textContent = data.people.total_events;
 

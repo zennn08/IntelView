@@ -39,14 +39,17 @@ async def analyze_video_pipeline(video_file):
         people_task = asyncio.to_thread(run_people_detector, temp_video_path)
         eye_task = asyncio.to_thread(run_eye_tracking, temp_video_path)
 
-        transcript, people, eye = await asyncio.gather(
+        stt_output, people, eye = await asyncio.gather(
             transcript_task, people_task, eye_task
         )
+
+        transcript_text = stt_output.get("text", "")
+        acoustic_conf = stt_output.get("acoustic_confidence", 0)
 
         # --------------------------------------
         # 3. LLM Evaluation (sync)
         # --------------------------------------
-        evaluation = evaluate_exam(transcript, people, eye)
+        evaluation = evaluate_exam(transcript_text, people, eye)
 
         # --------------------------------------
         # Time tracking - END
@@ -55,7 +58,8 @@ async def analyze_video_pipeline(video_file):
         execution_time = round(time_end - time_start, 3)
 
         return {
-            "transcript": transcript,
+            "transcript": transcript_text,
+            "acoustic_confidence": acoustic_conf,
             "people": people,
             "evaluation": evaluation,
             "eye": eye,
