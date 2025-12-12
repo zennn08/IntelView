@@ -1,8 +1,13 @@
+from dotenv import load_dotenv
+# Load environment variables from .env file
+load_dotenv()
+
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from modules.pipeline.analyzer import analyze_video_pipeline
 
 import os
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ['MEDIAPIPE_DISABLE_LOG'] = '1'
 
