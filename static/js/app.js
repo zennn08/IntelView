@@ -59,23 +59,18 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     const data = await response.json();
 
     document.getElementById("speechText").textContent = data.transcript;
-    document.getElementById("peopleDetect").textContent = data.people.cheating_detected
-      ? "True"
-      : "False";
+    document.getElementById("peopleDetect").textContent = data.people.cheating_detected ? "True" : "False";
     document.getElementById("event").textContent = data.people.total_events;
 
-    document.getElementById("eyeDetect").textContent = data.eye.cheating_detected
-        ? "True"
-        : "False";
+    document.getElementById("eyeDetect").textContent = data.eye.cheating_detected ? "True" : "False";
     document.getElementById("eyeEvent").textContent = data.eye.total_events;
 
     document.getElementById("score").textContent = data.evaluation.score;
     document.getElementById("reason").textContent = data.evaluation.reason;
-    document.getElementById("cheatingEval").textContent =
-      data.evaluation.cheating_indication;
+    document.getElementById("cheatingEval").textContent = data.evaluation.cheating_indication;
+    document.getElementById("cheatingReason").textContent = data.evaluation.cheating_reason;
     document.getElementById("feedback").textContent = data.evaluation.feedback;
-    document.getElementById("timeExecution").textContent =
-      data.execution_time_seconds + " sec";
+    document.getElementById("timeExecution").textContent = data.execution_time_seconds + " sec";
 
     resultSection.classList.remove("hidden");
 

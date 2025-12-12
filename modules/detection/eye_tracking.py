@@ -276,7 +276,7 @@ def run_eye_tracking(video_path, min_consecutive_cheat_frames=10, left_thresh=0.
     print("Time execution eye_tracking : " , execution_time)
 
     return {
-        "cheating_detected": len(cheating_events) >= 5,
+        "cheating_detected": len(cheating_events) >= 2,
         "total_events": len(cheating_events),
         "events": cheating_events,
     }
