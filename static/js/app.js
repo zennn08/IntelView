@@ -65,6 +65,10 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
 
     document.getElementById("eyeDetect").textContent = data.eye.cheating_detected ? "True" : "False";
     document.getElementById("eyeEvent").textContent = data.eye.total_events;
+    const eyeConfScore = typeof data.eye.confidence_score === "number" ? data.eye.confidence_score : null;
+    document.getElementById("eyeConf").textContent = eyeConfScore !== null
+      ? (eyeConfScore * 100).toFixed(2)
+      : "-";
 
     document.getElementById("score").textContent = data.evaluation.score;
     document.getElementById("reason").textContent = data.evaluation.reason;

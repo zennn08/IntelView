@@ -1,7 +1,7 @@
 import cv2 as cv
 import mediapipe as mp
 import time
-from modules.utils import eye_utils  # atau: from . import utils
+from modules.utils import eye_utils  # import utils
 import math
 
 import numpy as np
@@ -192,7 +192,7 @@ def pixelCounter(first_piece, second_piece, third_piece):
     return pos_eye, color
 
 
-def run_eye_tracking(video_path, min_consecutive_cheat_frames=10, left_thresh=0.35, right_thresh=0.65):
+def run_eye_tracking(video_path, min_consecutive_cheat_frames=6, left_thresh=0.5, right_thresh=0.5):
     """
     Deteksi gaze berbasis video input (bukan kamera live).
     Mengembalikan dict berisi status cheating dan daftar event (timestamp).
@@ -208,6 +208,9 @@ def run_eye_tracking(video_path, min_consecutive_cheat_frames=10, left_thresh=0.
     cheating_events = []
     cheating_state = False
     cheat_streak = 0
+    frames_with_face = 0
+    frames_flagged = 0
+    frames_total = 0
 
     def gaze_ratio_from_mesh(mesh_coords):
         right_coords = [mesh_coords[p] for p in RIGHT_EYE]
@@ -243,12 +246,16 @@ def run_eye_tracking(video_path, min_consecutive_cheat_frames=10, left_thresh=0.
                 break
 
             frame_count += 1
+            frames_total += 1
             frame = cv.resize(frame, None, fx=1.5, fy=1.5, interpolation=cv.INTER_CUBIC)
             results = face_mesh.process(cv.cvtColor(frame, cv.COLOR_BGR2RGB))
             if results.multi_face_landmarks:
+                frames_with_face += 1
                 mesh_coords = landmarksDetection(frame, results, False)
                 ratio = gaze_ratio_from_mesh(mesh_coords)
                 is_cheating = ratio < left_thresh or ratio > right_thresh
+                if is_cheating:
+                    frames_flagged += 1
             else:
                 is_cheating = False
 
@@ -275,8 +282,16 @@ def run_eye_tracking(video_path, min_consecutive_cheat_frames=10, left_thresh=0.
     execution_time = round(time_end - time_start, 3)
     print("Time execution eye_tracking : " , execution_time)
 
+    # Confidence: proporsi frame valid (ada wajah) yang keluar ambang
+    confidence_score = round(frames_flagged / max(frames_with_face, 1), 4)
+
     return {
-        "cheating_detected": len(cheating_events) >= 2,
+        "cheating_detected": len(cheating_events) >= 5,
         "total_events": len(cheating_events),
         "events": cheating_events,
+        "confidence_score": confidence_score,
+        "frames_total": frames_total,
+        "frames_with_face": frames_with_face,
+        "frames_flagged": frames_flagged,
+        "execution_time": execution_time,
     }
