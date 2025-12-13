@@ -51,7 +51,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
   btn.classList.add("loading");
 
   try {
-    const response = await fetch("http://localhost:5000/analyze", {
+    const response = await fetch("/analyze", {
       method: "POST",
       body: form,
     });
