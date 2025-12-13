@@ -35,5 +35,6 @@ async def analyze():
     result = await analyze_video_pipeline(request.files["video"])
     return jsonify(result), 200
 
-if __name__ == "__main__":
-    app.run(port=5000, debug=True, threaded=False)
+
+port = int(os.getenv("PORT", 5000))
+app.run(host="0.0.0.0", port=port, debug=True, threaded=False)
