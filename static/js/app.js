@@ -1,3 +1,6 @@
+// Global variable to store analyze response data
+let analyzeResponseData = null;
+
 // Drag and drop functionality
 const dropZone = document.getElementById("dropZone");
 const fileInput = document.getElementById("video");
@@ -57,6 +60,9 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     });
 
     const data = await response.json();
+
+    // Store response data globally for export functionality
+    analyzeResponseData = data;
 
     document.getElementById("speechText").textContent = data.transcript;
     document.getElementById("acousticConfscore").textContent = data.speech.acoustic_confidence;
@@ -190,6 +196,34 @@ document.getElementById("exportPdfBtn").addEventListener("click", () => {
 
   // Save PDF
   doc.save(`INTELVIEW_Report_${new Date().getTime()}.pdf`);
+});
+
+// Export JSON functionality
+document.getElementById("exportJsonBtn").addEventListener("click", () => {
+  if (!analyzeResponseData) {
+    alert("No data available to export. Please analyze a video first.");
+    return;
+  }
+
+  // Convert data to JSON string with pretty formatting
+  const jsonString = JSON.stringify(analyzeResponseData, null, 2);
+
+  // Create a Blob from the JSON string
+  const blob = new Blob([jsonString], { type: "application/json" });
+
+  // Create a download link
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `INTELVIEW_Analysis_${new Date().getTime()}.json`;
+
+  // Trigger the download
+  document.body.appendChild(link);
+  link.click();
+
+  // Clean up
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 });
 
 // Navbar scroll effect
