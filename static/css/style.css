@@ -46,6 +46,22 @@ body {
   letter-spacing: 1px;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(102, 126, 234, 0.4));
+  transition: all 0.3s ease;
+}
+
+.navbar-logo:hover .logo-img {
+  filter: drop-shadow(0 0 12px rgba(102, 126, 234, 0.7));
+  transform: rotate(5deg) scale(1.1);
 }
 
 .navbar-logo:hover {
@@ -603,6 +619,12 @@ button.loading {
 
   .navbar-logo {
     font-size: 24px;
+    gap: 8px; 
+  }
+
+  .logo-img {
+    width: 32px;
+    height: 32px;
   }
 
   .navbar-menu {
