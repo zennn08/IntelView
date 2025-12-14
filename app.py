@@ -29,11 +29,35 @@ def home():
 
 @app.route("/analyze", methods=["POST"])
 async def analyze():
-    if "video" not in request.files:
+    # Support both single and multiple video uploads
+    video_files = request.files.getlist("video")
+    questions = request.form.getlist("question")
+
+    if not video_files or len(video_files) == 0:
         return jsonify({"error": "no_video_uploaded"}), 400
 
-    result = await analyze_video_pipeline(request.files["video"])
-    return jsonify(result), 200
+    # If single video, return single result (backward compatibility)
+    if len(video_files) == 1:
+        question = questions[0] if questions else ""
+        result = await analyze_video_pipeline(video_files[0], question)
+        return jsonify(result), 200
+
+    # If multiple videos, process all and return array
+    import asyncio
+    results = []
+    for i, video_file in enumerate(video_files):
+        question = questions[i] if i < len(questions) else ""
+        result = await analyze_video_pipeline(video_file, question)
+        result["video_index"] = i
+        result["video_name"] = video_file.filename
+        result["question"] = question
+        results.append(result)
+
+    return jsonify({
+        "multiple": True,
+        "count": len(results),
+        "results": results
+    }), 200
 
 
 if __name__ == "__main__":

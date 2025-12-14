@@ -68,44 +68,62 @@
         <div id="analyze" class="section">
             <h2 class="section-title">Analyze Your Video</h2>
             <p class="section-subtitle">Upload video interview untuk mendapatkan analisis AI near-real-time</p>
-            <div class="upload-zone" id="dropZone">
-                <div class="upload-icon">📁</div>
-                <p>DRAG & DROP VIDEO HERE</p>
-                <span style="color: #888; font-size: 14px;">or click to browse</span>
-                <input type="file" id="video" accept="video/*">
+
+            <div id="videoEntriesContainer">
+                <!-- Video entries will be added here dynamically -->
             </div>
-            <button id="analyzeBtn">Analyze Video</button>
+
+            <div id="buttonContainer" style="margin-top: 20px; width: 100%; max-width: 1200px; display: grid; grid-template-columns: 200px 1fr; gap: 15px;">
+                <button id="addVideoBtn" style="background: rgba(102, 126, 234, 0.2); color: #667eea; border: 2px solid #667eea; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: bold; transition: all 0.3s; width: 100%;">
+                    ➕ Add Video
+                </button>
+                <button id="analyzeBtn" style="width: 100%;">Analyze All Videos</button>
+            </div>
         </div>
 
         <!-- Results Section -->
         <div id="result-section" class="hidden">
-            <div class="card">
-                <h3>📝 Speech To Text</h3>
-                <p id="speechText"></p>
-                <p><b>Acoustic Confidance Score:</b> <span id="acousticConfscore"></span></p>
+            <!-- Single Video Results (Legacy) -->
+            <div id="single-result" class="hidden">
+                <div class="card" id="questionCard" style="display: none; padding: 15px; background: rgba(102, 126, 234, 0.1); border-left: 3px solid rgba(102, 126, 234, 0.8);">
+                    <h3>❓ Interview Question</h3>
+                    <p id="questionText" style="font-style: italic;"></p>
+                    <div id="questionMatchBadge"></div>
+                </div>
+
+                <div class="card">
+                    <h3>📝 Speech To Text</h3>
+                    <p id="speechText"></p>
+                    <p><b>Acoustic Confidance Score:</b> <span id="acousticConfscore"></span></p>
+                </div>
+
+                <div class="card">
+                    <h3>🔍 Cheating Identification</h3>
+                    <p><b>People Detector:</b> <span id="peopleDetect"></span></p>
+                    <p><b>Event's People Detector::</b> <span id="event"></span></p>
+                    <p><b>Confidence People Score:</b> <span id="peopleConf"></span></p>
+                    <p><b>Eye Detector:</b> <span id="eyeDetect"></span></p>
+                    <p><b>Event's Eye Detector:</b> <span id="eyeEvent"></span></p>
+                    <p><b>Confidence Eye Score:</b> <span id="eyeConf"></span></p>
+                </div>
+
+                <div class="card">
+                    <h3>📊 Evaluation Report</h3>
+                    <p><b>Score:</b> <span id="score"></span></p>
+                    <p><b>Confidence Score:</b> <span id="scoreConf"></span></p>
+                    <p><b>Reason:</b> <span id="reason"></span></p>
+                    <p><b>Cheating:</b> <span id="cheatingEval"></span></p>
+                    <p><b>Cheating Reason:</b> <span id="cheatingReason"></span></p>
+                    <p><b>Feedback:</b> <span id="feedback"></span></p>
+                    <p><b>Time Execution:</b> <span id="timeExecution"></span></p>
+                    <button id="exportPdfBtn" class="export-btn">📄 Export to PDF</button>
+                    <button id="exportJsonBtn" class="export-btn">📦 Export to JSON</button>
+                </div>
             </div>
 
-            <div class="card">
-                <h3>🔍 Cheating Identification</h3>
-                <p><b>People Detector:</b> <span id="peopleDetect"></span></p>
-                <p><b>Event's People Detector::</b> <span id="event"></span></p>
-                <p><b>Confidence People Score:</b> <span id="peopleConf"></span></p>
-                <p><b>Eye Detector:</b> <span id="eyeDetect"></span></p>
-                <p><b>Event's Eye Detector:</b> <span id="eyeEvent"></span></p>
-                <p><b>Confidence Eye Score:</b> <span id="eyeConf"></span></p>
-            </div>
-
-            <div class="card">
-                <h3>📊 Evaluation Report</h3>
-                <p><b>Score:</b> <span id="score"></span></p>
-                <p><b>Confidence Score:</b> <span id="scoreConf"></span></p>
-                <p><b>Reason:</b> <span id="reason"></span></p>
-                <p><b>Cheating:</b> <span id="cheatingEval"></span></p>
-                <p><b>Cheating Reason:</b> <span id="cheatingReason"></span></p>
-                <p><b>Feedback:</b> <span id="feedback"></span></p>
-                <p><b>Time Execution:</b> <span id="timeExecution"></span></p>
-                <button id="exportPdfBtn" class="export-btn">📄 Export to PDF</button>
-                <button id="exportJsonBtn" class="export-btn">📦 Export to JSON</button>
+            <!-- Multiple Videos Results -->
+            <div id="multiple-results" class="hidden">
+                <!-- Will be populated dynamically by JavaScript -->
             </div>
         </div>
     </div>

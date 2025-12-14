@@ -12,7 +12,7 @@ from modules.llm.llm_utils import evaluate_exam
 
 logger = logging.getLogger(__name__)
 
-async def analyze_video_pipeline(video_file):
+async def analyze_video_pipeline(video_file, question=""):
 
     # ------------------------------
     # Time tracking - START
@@ -50,9 +50,9 @@ async def analyze_video_pipeline(video_file):
         final_confidence_score = 0.2*acoustic_conf + 0.4*confidence_score_people + 0.4*confidence_score_eye
 
         # --------------------------------------
-        # 3. LLM Evaluation (sync)
+        # 3. LLM Evaluation (sync) - pass question
         # --------------------------------------
-        evaluation = evaluate_exam(transcript_text, people, eye)
+        evaluation = evaluate_exam(transcript_text, people, eye, question)
 
         # --------------------------------------
         # Time tracking - END
@@ -67,6 +67,7 @@ async def analyze_video_pipeline(video_file):
             "people": people,
             "evaluation": evaluation,
             "eye": eye,
+            "question": question,
             "time_start": time_start,
             "time_end": time_end,
             "execution_time_seconds": execution_time

@@ -515,6 +515,13 @@ button:disabled {
   color: #a8a8a8;
 }
 
+/* Video Entries Container */
+#videoEntriesContainer {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 .hidden {
   display: none;
 }
@@ -593,16 +600,16 @@ button.loading {
   .navbar {
     padding: 0 20px;
   }
-  
+
   .navbar-logo {
     font-size: 24px;
   }
-  
+
   .navbar-menu {
     width: 100%;
     right: -100%;
   }
-  
+
   .title {
     font-size: 48px;
   }
@@ -610,37 +617,37 @@ button.loading {
   .subtitle {
     font-size: 16px;
   }
-  
+
   .section-title {
     font-size: 36px;
   }
-  
+
   .section-subtitle {
     font-size: 14px;
   }
-  
+
   .features-container {
     grid-template-columns: 1fr;
     gap: 20px;
   }
-  
+
   .feature-card:last-child {
     grid-column: span 1;
     max-width: 100%;
   }
-  
+
   .feature-card {
     padding: 30px 25px;
   }
-  
+
   .feature-icon {
     font-size: 48px;
   }
-  
+
   .feature-title {
     font-size: 20px;
   }
-  
+
   .feature-description {
     font-size: 14px;
   }
@@ -651,5 +658,20 @@ button.loading {
 
   .card {
     padding: 20px;
+  }
+
+  /* Responsive video entries */
+  #videoEntriesContainer {
+    padding: 0 10px;
+  }
+
+  #buttonContainer {
+    grid-template-columns: 1fr !important;
+    padding: 0 10px;
+  }
+
+  .section #addVideoBtn,
+  .section #analyzeBtn {
+    width: 100% !important;
   }
 }
