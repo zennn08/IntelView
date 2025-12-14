@@ -45,6 +45,9 @@ async def analyze_video_pipeline(video_file):
 
         transcript_text = stt_output.get("text", "")
         acoustic_conf = stt_output.get("acoustic_confidence", 0)
+        confidence_score_people = people.get("confidence_score", 0)
+        confidence_score_eye = eye.get("confidence_score", 0)
+        final_confidence_score = 0.2*acoustic_conf + 0.4*confidence_score_people + 0.4*confidence_score_eye
 
         # --------------------------------------
         # 3. LLM Evaluation (sync)
@@ -59,7 +62,8 @@ async def analyze_video_pipeline(video_file):
 
         return {
             "transcript": transcript_text,
-            "acoustic_confidence": acoustic_conf,
+            "confidence_score": round(final_confidence_score, 2),
+            "speech": stt_output,
             "people": people,
             "evaluation": evaluation,
             "eye": eye,

@@ -143,7 +143,7 @@ def run_people_detector(
     # Confidence score
     confidence_score = 0.0
     if detected_frames > 0:
-        confidence_score = round(single_person_frames / detected_frames, 4)
+        confidence_score = round(single_person_frames / detected_frames, 2)
 
     time_end = time.time()
     execution_time = round(time_end - time_start, 3)

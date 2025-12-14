@@ -59,18 +59,18 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     const data = await response.json();
 
     document.getElementById("speechText").textContent = data.transcript;
-    document.getElementById("acousticConfscore").textContent = data.acoustic_confidence;
+    document.getElementById("acousticConfscore").textContent = data.speech.acoustic_confidence;
+
     document.getElementById("peopleDetect").textContent = data.people.cheating_detected ? "True" : "False";
     document.getElementById("event").textContent = data.people.total_events;
+    document.getElementById("peopleConf").textContent = data.people.confidence_score;
 
     document.getElementById("eyeDetect").textContent = data.eye.cheating_detected ? "True" : "False";
     document.getElementById("eyeEvent").textContent = data.eye.total_events;
-    const eyeConfScore = typeof data.eye.confidence_score === "number" ? data.eye.confidence_score : null;
-    document.getElementById("eyeConf").textContent = eyeConfScore !== null
-      ? (eyeConfScore * 100).toFixed(2)
-      : "-";
+    document.getElementById("eyeConf").textContent = data.eye.confidence_score;
 
     document.getElementById("score").textContent = data.evaluation.score;
+    document.getElementById("scoreConf").textContent = data.confidence_score;
     document.getElementById("reason").textContent = data.evaluation.reason;
     document.getElementById("cheatingEval").textContent = data.evaluation.cheating_indication;
     document.getElementById("cheatingReason").textContent = data.evaluation.cheating_reason;
@@ -190,4 +190,46 @@ document.getElementById("exportPdfBtn").addEventListener("click", () => {
 
   // Save PDF
   doc.save(`INTELVIEW_Report_${new Date().getTime()}.pdf`);
+});
+
+// Navbar scroll effect
+const navbar = document.getElementById('navbar');
+const navToggle = document.getElementById('navToggle');
+const navMenu = document.getElementById('navMenu');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 50) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
+
+// Mobile menu toggle
+navToggle.addEventListener('click', () => {
+  navToggle.classList.toggle('active');
+  navMenu.classList.toggle('active');
+});
+
+// Close menu when clicking on a link
+const navLinks = document.querySelectorAll('.navbar-menu a');
+navLinks.forEach(link => {
+  link.addEventListener('click', () => {
+    navToggle.classList.remove('active');
+    navMenu.classList.remove('active');
+  });
+});
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
 });

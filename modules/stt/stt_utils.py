@@ -42,6 +42,6 @@ def run_whisper(audio_path):
 
     return {
         "text": result.get("text", ""),
-        "acoustic_confidence": round(speech_confidence * 100, 2),
+        "acoustic_confidence": round(speech_confidence, 2),
         "execution_time": execution_time
     }

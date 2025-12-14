@@ -4,11 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INTELVIEW - AI Interview Analyzer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-logo">INTELVIEW</div>
+        <div class="navbar-toggle" id="navToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul class="navbar-menu" id="navMenu">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#analyze">Analyze</a></li>
+        </ul>
+    </nav>
+
     <!-- Background Effects -->
     <div class="bg-effects">
         <div class="light-orb orb-1"></div>
@@ -18,13 +34,40 @@
 
     <div class="page-wrapper">
         <!-- Hero Section -->
-        <div class="section">
+        <div id="hero" class="section">
             <h1 class="title">INTELVIEW</h1>
             <p class="subtitle">Analisis video interview berbasis AI untuk mengidentifikasi kecurangan dan memberikan feedback laporan evaluasi dengan memanfaatkan Model Gemini</p>
         </div>
 
+        <!-- Features Section -->
+        <div id="features" class="features-section">
+            <h2 class="section-title">Our Features</h2>
+            <p class="section-subtitle">Teknologi AI canggih untuk analisis interview yang komprehensif</p>
+            <div class="features-container">
+                <div class="feature-card">
+                    <i class="fas fa-microphone-alt feature-icon"></i>
+                    <h4 class="feature-title">Speech Analysis</h4>
+                    <p class="feature-description">Konversi speech-to-text dan analisis confidence score akustik menggunakan model <b>Whisper</b></p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-eye feature-icon"></i>
+                    <h4 class="feature-title">Cheating Detection</h4>
+                    <p class="feature-description">Deteksi kecurangan real-time melalui analisis gerakan mata dan jumlah orang menggunakan model <b>Yolo12-Face</b> dan <b>Mediapipe</b></p>
+                </div>
+                
+                <div class="feature-card">
+                    <i class="fas fa-solid fa-brain feature-icon"></i>
+                    <h4 class="feature-title">AI Evaluation</h4>
+                    <p class="feature-description">Laporan evaluasi lengkap dengan scoring dan feedback menggunakan model <b>Gemini 2.5 flash</b></p>
+                </div>
+            </div>
+        </div>
+
         <!-- Upload Section -->
-        <div class="section">
+        <div id="analyze" class="section">
+            <h2 class="section-title">Analyze Your Video</h2>
+            <p class="section-subtitle">Upload video interview untuk mendapatkan analisis AI near-real-time</p>
             <div class="upload-zone" id="dropZone">
                 <div class="upload-icon">📁</div>
                 <p>DRAG & DROP VIDEO HERE</p>
@@ -45,15 +88,17 @@
             <div class="card">
                 <h3>🔍 Cheating Identification</h3>
                 <p><b>People Detector:</b> <span id="peopleDetect"></span></p>
-                <p><b>Event:</b> <span id="event"></span></p>
+                <p><b>Event's People Detector::</b> <span id="event"></span></p>
+                <p><b>Confidence People Score:</b> <span id="peopleConf"></span></p>
                 <p><b>Eye Detector:</b> <span id="eyeDetect"></span></p>
-                <p><b>Events:</b> <span id="eyeEvent"></span></p>
-                <p><b>Eye Confidence:</b> <span id="eyeConf"></span></p>
+                <p><b>Event's Eye Detector:</b> <span id="eyeEvent"></span></p>
+                <p><b>Confidence Eye Score:</b> <span id="eyeConf"></span></p>
             </div>
 
             <div class="card">
                 <h3>📊 Evaluation Report</h3>
                 <p><b>Score:</b> <span id="score"></span></p>
+                <p><b>Confidence Score:</b> <span id="scoreConf"></span></p>
                 <p><b>Reason:</b> <span id="reason"></span></p>
                 <p><b>Cheating:</b> <span id="cheatingEval"></span></p>
                 <p><b>Cheating Reason:</b> <span id="cheatingReason"></span></p>
