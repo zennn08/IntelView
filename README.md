@@ -27,8 +27,9 @@ INTELVIEW adalah platform penilaian wawancara berbasis AI yang menganalisis reka
 
 ## 🏗️ Arsitektur Sistem
 
+### Single Video Flow
 ```
-User Upload Video + Pertanyaan
+User Upload 1 Video + Pertanyaan
          ↓
     Flask /analyze endpoint
          ↓
@@ -54,10 +55,48 @@ analyze_video_pipeline (async)
     │     • Generasi feedback        │
     └────────────────────────────────┘
          ↓
-    Hasil Komposit
+    Hasil Direct Object
          ↓
     Display Frontend + Export
 ```
+
+### Multiple Videos Flow
+```
+User Upload N Videos + Pertanyaan
+         ↓
+    Flask /analyze endpoint
+         ↓
+    Loop untuk setiap video (sequential)
+         ↓
+    ┌─────────────────────────────────────────┐
+    │  Untuk Video ke-i:                      │
+    │  ┌───────────────────────────────────┐  │
+    │  │ analyze_video_pipeline (async)    │  │
+    │  │  • Simpan temporary               │  │
+    │  │  • Ekstrak audio                  │  │
+    │  │  • Pemrosesan paralel (STT, YOLO, │  │
+    │  │    MediaPipe)                     │  │
+    │  │  • Evaluasi Gemini                │  │
+    │  └───────────────────────────────────┘  │
+    │         ↓                                │
+    │  Tambahkan metadata:                     │
+    │  • video_index: i                        │
+    │  • video_name: filename                  │
+    │  • question: pertanyaan                  │
+    └─────────────────────────────────────────┘
+         ↓
+    Kumpulkan semua hasil dalam array
+         ↓
+    Return dengan wrapper:
+    { multiple: true, count: N, results: [...] }
+         ↓
+    Display Frontend + Export
+```
+
+**Perbedaan Kunci:**
+- **Single**: Direct return tanpa wrapper
+- **Multiple**: Sequential processing dengan metadata tambahan
+- **Multiple**: Response wrapped dengan `multiple`, `count`, dan `results` array
 
 ## 📂 Struktur Project
 
@@ -158,33 +197,65 @@ Aplikasi akan berjalan di `http://0.0.0.0:5000`
 
 ## 📖 Cara Penggunaan
 
+### Mode Analisis
+
+INTELVIEW mendukung dua mode analisis dengan hasil yang berbeda:
+
+#### 🎥 Single Video Mode
+Untuk analisis satu video wawancara:
+1. Upload satu file video
+2. Masukkan pertanyaan (opsional)
+3. Hasil ditampilkan langsung tanpa wrapper array
+4. Ideal untuk quick assessment atau testing
+
+#### 🎬 Multiple Videos Mode
+Untuk analisis batch beberapa video sekaligus:
+1. Klik "Add Video Entry" untuk menambah video baru
+2. Upload beberapa file video sekaligus
+3. Masukkan pertanyaan untuk setiap video (opsional)
+4. Hasil ditampilkan dalam format array dengan metadata tambahan:
+   - Video index dan nama file
+   - Pertanyaan yang diajukan
+   - Semua metrik analisis per video
+5. Ideal untuk batch processing kandidat
+
+### Langkah-langkah Penggunaan
+
 ### 1. Upload Video
-- Klik tombol "Add Video Entry" untuk menambah video baru
+- **Single Video**: Upload langsung satu file video
+- **Multiple Videos**: Klik tombol "Add Video Entry" untuk menambah video baru
 - Pilih file video wawancara (format: MP4, AVI, MOV, dll)
-- Masukkan pertanyaan yang diajukan (opsional)
+- Masukkan pertanyaan yang diajukan untuk setiap video (opsional)
 
 ### 2. Analisis
 - Klik tombol "Analyze Videos" untuk memulai proses analisis
-- Tunggu hingga proses selesai (durasi tergantung panjang video)
+- Tunggu hingga proses selesai (durasi tergantung panjang dan jumlah video)
+- **Note**: Multiple videos diproses secara sequential
 
 ### 3. Lihat Hasil
-Hasil analisis mencakup:
+Hasil analisis mencakup (sama untuk single dan multiple mode):
 - **Transcript** - Transkripsi lengkap dari jawaban
 - **Score** - Nilai 0-4 berdasarkan rubrik
-- **Reasoning** - Penjelasan penilaian
+- **Reasoning** - Penjelasan penilaian dari AI
 - **Feedback** - Saran konstruktif untuk perbaikan
 - **Cheating Detection**
-  - People Detected: Jumlah orang terdeteksi
-  - Eye Tracking: Status gerakan mata
+  - People Detected: Jumlah orang terdeteksi dalam frame
+  - Eye Tracking: Status gerakan mata (OK/Flagged)
 - **Confidence Metrics**
-  - Overall Confidence
-  - Acoustic Confidence
-  - People Confidence
-  - Eye Confidence
+  - Overall Confidence: Skor gabungan
+  - Acoustic Confidence: Kepercayaan diri dari audio
+  - People Confidence: Konsistensi single person
+  - Eye Confidence: Konsistensi eye contact
+- **Processing Time**: Waktu yang dibutuhkan untuk analisis
+
+**Tambahan untuk Multiple Videos:**
+- Video Index: Urutan video dalam batch
+- Video Name: Nama file asli
+- Total Count: Jumlah total video yang dianalisis
 
 ### 4. Export Hasil
-- **Export to PDF** - Download hasil dalam format PDF
-- **Export to JSON** - Download data mentah dalam format JSON
+- **Export to PDF** - Download hasil dalam format PDF (single atau multiple)
+- **Export to JSON** - Download data mentah dalam format JSON dengan struktur sesuai mode
 
 ## 📊 Sistem Penilaian
 
@@ -269,23 +340,50 @@ language = "english"          # Bahasa transkripsi
 ## 📝 API Endpoints
 
 ### POST `/analyze`
-Endpoint utama untuk analisis video.
+Endpoint utama untuk analisis video. Response format berbeda tergantung jumlah video yang di-upload.
 
-**Request:**
+**Request (Form Data):**
+```
+video: File atau FileList       // Satu atau lebih video files
+question: String atau Array     // Pertanyaan untuk setiap video (opsional)
+```
+
+#### Response untuk Single Video
+Hasil langsung tanpa wrapper array:
+
 ```json
 {
-  "videos": [File],           // Array of video files
-  "questions": ["Question"]   // Array of questions (optional)
+  "transcript": "TensorFlow is an open-source machine learning framework...",
+  "evaluation": {
+    "score": 3,
+    "reasoning": "The candidate provided a solid explanation...",
+    "feedback": "Consider adding more specific examples...",
+    "cheating_detected": false
+  },
+  "people_detected": 1,
+  "eye_tracking_status": "OK",
+  "confidence": {
+    "overall": 0.85,
+    "acoustic": 0.92,
+    "people": 1.0,
+    "eye": 0.78
+  },
+  "processing_time": "15.3 seconds"
 }
 ```
 
-**Response:**
+#### Response untuk Multiple Videos
+Object dengan wrapper dan metadata tambahan:
+
 ```json
 {
+  "multiple": true,
+  "count": 3,
   "results": [
     {
-      "video_name": "interview.mp4",
-      "question": "Explain TensorFlow",
+      "video_index": 0,
+      "video_name": "interview1.mp4",
+      "question": "Explain TensorFlow basics",
       "transcript": "...",
       "evaluation": {
         "score": 3,
@@ -302,11 +400,26 @@ Endpoint utama untuk analisis video.
         "eye": 0.78
       },
       "processing_time": "15.3 seconds"
+    },
+    {
+      "video_index": 1,
+      "video_name": "interview2.mp4",
+      "question": "Explain neural networks",
+      "transcript": "...",
+      "evaluation": { ... },
+      "people_detected": 2,
+      "eye_tracking_status": "Flagged",
+      "confidence": { ... },
+      "processing_time": "18.7 seconds"
     }
-  ],
-  "total_time": "15.3 seconds"
+  ]
 }
 ```
+
+**Perbedaan Utama:**
+- **Single Video**: Return hasil langsung sebagai object
+- **Multiple Videos**: Return object dengan `multiple: true`, `count`, dan array `results`
+- **Metadata Tambahan**: Untuk multiple videos, setiap hasil memiliki `video_index`, `video_name`, dan `question`
 
 ## 🐛 Troubleshooting
 
