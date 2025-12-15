@@ -324,7 +324,7 @@ SCORING RUBRIC (0-4 points):
 IMPORTANT: Evaluate the candidate's response to the INTERVIEW QUESTION ASKED above, using the rubric criteria.
 The standard question is provided for context to help you understand the expected topic and depth of the answer."""
 
-    elif question:
+    else:
         # Case 2: User provided question tapi tidak match dengan bank
         # Gunakan generic rubrik yang universal
         logger.info("No matching question found, using generic rubric")
@@ -337,19 +337,6 @@ SCORING RUBRIC (0-4 points):
 2 = General response with limited details, shows basic understanding but lacks specificity
 1 = Minimal or vague response, very limited details
 0 = No answer or completely irrelevant response"""
-
-    else:
-        # Case 3: Tidak ada question provided
-        # Gunakan semua 5 questions dari bank sebagai reference
-        logger.info("No question provided, using default all-questions rubric")
-        all_questions_rubric = "\n\n".join([
-            f"{q_id.upper()} — {q_data['question']}\n{q_data['rubric']}"
-            for q_id, q_data in QUESTION_BANK.items()
-        ])
-        rubric_section = f"""SCORING RUBRIC (0-4 points):
-Note: Since no specific question was provided, evaluate based on which of the following standard questions the transcript seems to answer:
-
-{all_questions_rubric}"""
 
     # ============================================
     # Step 3: Build Complete Prompt
