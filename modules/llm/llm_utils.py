@@ -271,6 +271,7 @@ EVALUATION INSTRUCTIONS:
             time_start = time.time()
             
             resp = gemini.generate_content(prompt)
+            print(prompt)
             text = getattr(resp, "text", resp.candidates[0].content.parts[0].text)
             cleaned = clean_json(text)
             
