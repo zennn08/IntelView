@@ -249,6 +249,8 @@ function renderSingleResult(data) {
   }
 
   document.getElementById("speechText").textContent = data.transcript;
+  document.getElementById("wordRatePerMinute").textContent = data.speech.wrp;
+  document.getElementById("wordCount").textContent = data.speech.word_count;
   document.getElementById("acousticConfscore").textContent = data.speech.acoustic_confidence;
 
   document.getElementById("peopleDetect").textContent = data.people.cheating_detected ? "True" : "False";
@@ -311,6 +313,8 @@ function renderMultipleResults(data) {
       <div style="margin-bottom: 20px;">
         <h3>📝 Speech To Text</h3>
         <p>${result.transcript}</p>
+        <p><b>WRP (Word Rate per Minute):</b> ${result.speech.wrp}</p>
+        <p><b>Word Count:</b> ${result.speech.word_count}</p>
         <p><b>Acoustic Confidence Score:</b> ${result.speech.acoustic_confidence}</p>
       </div>
 
