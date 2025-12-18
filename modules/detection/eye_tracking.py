@@ -33,8 +33,8 @@ from modules.utils import eye_utils
 # Threshold untuk gaze direction detection
 # Nilai lebih rendah = lebih toleran untuk left gaze
 # Nilai lebih tinggi = lebih toleran untuk right gaze
-LEFT_GAZE_THRESH = 0.25      # Default: 0.25 (gaze ratio < 0.25 = looking left)
-RIGHT_GAZE_THRESH = 0.75     # Default: 0.75 (gaze ratio > 0.75 = looking right)
+LEFT_GAZE_THRESH = 0.45      # Default: 0.25 (gaze ratio < 0.25 = looking left)
+RIGHT_GAZE_THRESH = 0.55     # Default: 0.75 (gaze ratio > 0.75 = looking right)
 
 # Smoothing window size untuk moving average
 # Nilai lebih besar = smoother tapi less responsive
