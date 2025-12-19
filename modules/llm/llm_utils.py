@@ -369,7 +369,7 @@ EVALUATION INSTRUCTIONS:
 6. Give constructive, actionable feedback for improvement
 7. Return ONLY valid JSON with this exact structure:
 
-{{"score": <0-4>, "reason": "<detailed explanation of why you gave this score, referencing specific parts of the transcript>", "cheating_indication": <true/false>, "cheating_reason": "<if cheating detected, explain when and why; otherwise say 'No cheating indicated'>", "feedback": "<constructive, specific feedback on how the candidate can improve their response>"}}"""
+{{"score": <0-4>, "reason": "<detailed explanation of why you gave this score, referencing specific parts of the transcript>", "cheating_indication": <true/false>, "cheating_reason": "<if cheating detected, explain when (you MUST state the specific timestamp/moment (e.g., 'at 00:30') AND the specific behavior detected (e.g., 'multiple people detected')) and why; otherwise say 'No cheating indicated'>", "feedback": "<constructive, specific feedback on how the candidate can improve their response>"}}"""
 
     # ============================================
     # Fallback Response (jika LLM gagal)
